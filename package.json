@@ -1,0 +1,12 @@
+{
+  "scripts": {
+    "build": "tsc --outDir build src/*.ts",
+    "start": "node build/index.js"
+  },
+  "dependencies": {
+    "@melonproject/protocol": "^1.0.10-alpha.4",
+    "@melonproject/token-math": "^0.1.6",
+    "ethers": "^4.0.37",
+    "typescript": "^3.6.4"
+  }
+}
