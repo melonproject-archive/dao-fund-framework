@@ -31,9 +31,35 @@ const getEnvironment = async (conf) => {
 
 const setupFund = async (environment: Environment, conf) => {
   const manager = conf.Manager;
-  const { melonContracts } = environment.deployment;
+  const { exchangeConfigs, melonContracts } = environment.deployment;
+  const exchanges = {};
+  conf.Exchanges.forEach(e => exchanges[e] = exchangeConfigs[e]);
 
-  // NB: `beginSetup` has to be called from the DAO before any of this
+  const weth = getTokenBySymbol(environment, 'WETH');
+  const defaultTokens = conf.AllowedTokens.map(sym => getTokenBySymbol(environment, sym));
+
+  const quoteToken = getTokenBySymbol(environment, conf.QuoteToken);
+
+  const fees = [
+    {
+      feeAddress: melonContracts.fees.managementFee.toLowerCase(),
+      feePeriod: toBI(0),
+      feeRate: appendDecimals(quoteToken, conf.ManagementFee),
+    }, {
+      feeAddress: melonContracts.fees.performanceFee.toLowerCase(),
+      feePeriod: toBI(60 * 60 * 24 * 90), // performance fee redeemable every quarter
+      feeRate: appendDecimals(quoteToken, conf.PerformanceFee),
+    },
+  ];
+
+  await beginSetup(environment, melonContracts.version, {
+    defaultTokens,
+    exchangeConfigs: exchanges,
+    fees,
+    fundName: conf.FundName,
+    quoteToken,
+  });
+  console.log('Fund setup started');
   await createAccountingFor(environment, melonContracts.version, {manager});
   console.log('Accouting created');
   await createFeeManagerFor(environment, melonContracts.version, {manager});

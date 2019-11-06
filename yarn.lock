@@ -453,10 +453,10 @@
   resolved "https://registry.yarnpkg.com/@ledgerhq/logs/-/logs-4.72.0.tgz#43df23af013ad1135407e5cf33ca6e4c4c7708d5"
   integrity sha512-o+TYF8vBcyySRsb2kqBDv/KMeme8a2nwWoG+lAWzbDmWfb2/MrVWYCVYDYvjXdSoI/Cujqy1i0gIDrkdxa9chA==
 
-"@melonproject/protocol@^1.0.10-alpha.4":
-  version "1.0.10-alpha.4"
-  resolved "https://registry.yarnpkg.com/@melonproject/protocol/-/protocol-1.0.10-alpha.4.tgz#de4eeca287ad301857dbe5977519e0836dcb239b"
-  integrity sha512-ZSchFkSsXvHQ7Rdi/u3YUoapJyBnL8S1UMoMv/4bqRYqfUjlX3s3aAVikU6bdgD/NEXZCqStu7LwwyBUGFrsEQ==
+"@melonproject/protocol@^1.0.10":
+  version "1.0.10"
+  resolved "https://registry.yarnpkg.com/@melonproject/protocol/-/protocol-1.0.10.tgz#7538e011a4b3809172a59276bb941f7cb05d402b"
+  integrity sha512-fpzQls/ggWBAEkq/IuHA+g5HvLEBPMc+JjBbSFkvCqHYTteeeW9vN/K5YFqUVGhAk4G9ODg/RCPQyp7IR5IuUw==
   dependencies:
     "@0x/contract-wrappers" "^4.1.1"
     "@0x/order-utils" "^3.0.4"

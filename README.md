@@ -35,9 +35,6 @@ An example config:
 
 ## Usage
 
-1. Call `FundFactory.beginSetup({params})` from `dao-agent`
-2. `yarn start`
-
 For `beginSetup` params, check out [the solidity function](https://github.com/melonproject/protocol/blob/setup-on-behalf/src/contracts/factory/FundFactory.sol#L90-L99).
 
 These parameters would be derived from the config mentioned above.
