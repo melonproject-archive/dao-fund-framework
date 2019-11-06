@@ -11,7 +11,6 @@ import { withDeployment } from '@melonproject/protocol/lib/utils/environment/wit
 import * as fs from 'fs';
 import * as path from 'path';
 
-
 const track = Tracks.KYBER_PRICE;
 const packageRoot = path.resolve(`${path.dirname(require.main.filename)}/..`);
 const configPath = `${packageRoot}/private/conf.json`;
@@ -31,38 +30,10 @@ const getEnvironment = async (conf) => {
 }
 
 const setupFund = async (environment: Environment, conf) => {
-  // NB: manager must approve of the address in keystore with `permitDelegatedCreation`
   const manager = conf.Manager;
-  const { exchangeConfigs, melonContracts } = environment.deployment;
-  const exchanges = {};
-  conf.Exchanges.forEach(e => exchanges[e] = exchangeConfigs[e]);
+  const { melonContracts } = environment.deployment;
 
-  const weth = getTokenBySymbol(environment, 'WETH');
-  const defaultTokens = conf.AllowedTokens.map(sym => getTokenBySymbol(environment, sym));
-
-  const quoteToken = getTokenBySymbol(environment, conf.QuoteToken);
-
-  const fees = [
-    {
-      feeAddress: melonContracts.fees.managementFee.toLowerCase(),
-      feePeriod: toBI(0),
-      feeRate: appendDecimals(quoteToken, conf.ManagementFee),
-    }, {
-      feeAddress: melonContracts.fees.performanceFee.toLowerCase(),
-      feePeriod: toBI(60 * 60 * 24 * 90), // performance fee redeemable every quarter
-      feeRate: appendDecimals(quoteToken, conf.PerformanceFee),
-    },
-  ];
-
-  await beginSetup(environment, melonContracts.version, {
-    defaultTokens,
-    exchangeConfigs: exchanges,
-    fees,
-    fundName: conf.FundName,
-    manager,
-    quoteToken,
-  });
-  console.log('Fund setup started');
+  // NB: `beginSetup` has to be called from the DAO before any of this
   await createAccountingFor(environment, melonContracts.version, {manager});
   console.log('Accouting created');
   await createFeeManagerFor(environment, melonContracts.version, {manager});
