@@ -27,7 +27,7 @@ An example config:
 }
 ```
 
-- Manager is the address that will ultimately manage the Fund (but maybe not set it up).
+- Manager is the address that sets up and manage the Fund (in that case, it would be an aragon dao agent).
 - Exchanges can be some subset of the listed exchanges
 - AllowedToken can be some subset of the listed tokens
 - QuoteToken must appear in AllowedTokens
