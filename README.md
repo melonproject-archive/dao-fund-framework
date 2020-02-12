@@ -12,20 +12,9 @@ private/conf.json     # copy from template below
 
 ## Config
 
-An example config:
+See `sampleconf.json` for an example config to copy and modify.
 
-```
-{
-  "Endpoint": "https://kovan.infura.io/v3/something",
-  "FundName": "ExampleCapital",
-  "Manager": "0x0000000000111111111111222222222222233333",
-  "Exchanges": [ "MatchingMarket", "KyberNetwork", "ZeroEx", "Ethfinex", "MelonEngine" ],
-  "AllowedTokens": [ "BAT", "DGX", "REP", "ZRX", "WETH", "MLN", "MKR", "DAI", "KNC" ],
-  "QuoteToken": "WETH",
-  "ManagementFee": 0.02,
-  "PerformanceFee": 0.20
-}
-```
+In that file:
 
 - Manager is the address that sets up and manage the Fund (in that case, it would be an aragon dao agent).
 - Exchanges can be some subset of the listed exchanges
@@ -35,6 +24,16 @@ An example config:
 
 ## Usage
 
-For `beginSetup` params, check out [the solidity function](https://github.com/melonproject/protocol/blob/setup-on-behalf/src/contracts/factory/FundFactory.sol#L90-L99).
+_Aragon script will call `beginSetup`_
+
+For `beginSetup` params, check out [the solidity function](https://github.com/melonproject/protocol/blob/develop/src/factory/FundFactory.sol#L93-L100).
 
 These parameters would be derived from the config mentioned above.
+
+After this, use `meloncli` to execute the remaining setup transactions:
+
+```
+meloncli continue-setup-on-behalf $MANAGER \
+    --deployment ./rinkeby_addresses.json --endpoint $RINKEBY_ENDPOINT
+    --key-store $MY_KEYSTORE --key-store-password $PASS
+```
