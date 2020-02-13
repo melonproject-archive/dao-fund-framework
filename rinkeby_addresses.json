@@ -1,33 +1,34 @@
 {
   "conf": {
     "deployer": "0x0d580ae50b58fe08514deab4e38c0dfdb0d30adc",
-    "track": "KYBER_PRICE"
+    "provider": "https://rinkeby.infura.io/v3/9136e09ace01493b86fed528cb6a87a5",
+    "track": "TESTING"
   },
   "melon": {
     "addr": {
-      "EthfinexAdapter": "0xba286b3Ac3dD8c7Be36Daa0eD881c27aDb3d01Be",
-      "KyberAdapter": "0xC1d4ad6daF2de8087266807fD47b0784224a2afA",
-      "OasisDexAdapter": "0xD7A4BACa13dc65D8BbADc03C138474b289808d84",
-      "OasisDexAccessor": "0xa0D8C7cF857e38A36fbb8de6CC72A91AB220ff6d",
-      "UniswapAdapter": "0x9B7196d6F2dA7d26E54a34afda684bB281cFCA49",
-      "ZeroExV2Adapter": "0xEa2f40C8EdB4d5456100ff49FD9cadbf1C231Da9",
-      "ZeroExV3Adapter": "0xDa6FB831F3646dD813087847e6FDd5cde488F9aC",
-      "EngineAdapter": "0xd2f2C50786FcE8126a51B222b21A44F2fd8e6bF7",
-      "PriceTolerance": "0x33b5B31f14e037b7EA300D48B08480E60F89d1f5",
-      "UserWhitelist": "0xcD13d3DbA3B374B73FD99c40f3b751E12B9d3Aa0",
-      "ManagementFee": "0xb0c51FbF0fb21291C01d767C637b51E8ea6bd30b",
-      "AccountingFactory": "0x78A42CF7176D91861BF0Fb0e2a9dC52F37182588",
-      "FeeManagerFactory": "0x773d77feE0F2d2657E7371f271029284bd72635c",
-      "ParticipationFactory": "0x729acE0380f40F78A966E7bdC5B165A66C58Ef68",
-      "PolicyManagerFactory": "0xa2D7794a0Cd0899d0BB009f39d9e9423325e68B9",
-      "SharesFactory": "0x5DfA666aCd7C9688212d12C912D0fCA1099D69e2",
-      "TradingFactory": "0x724029C7E2F5529826a52507e61fCc2bcdEd93c6",
-      "VaultFactory": "0xc5A3628E8d3Dfdb37AE02d117696298e158ae02f",
-      "PerformanceFee": "0x4636A85173455b535f3470D4A91B9d208782D7DD",
-      "Registry": "0x121A580a9691429762F7a388b992f9fC640c7e68",
-      "Engine": "0x43C7Ff2D2B3500C6B7aAA2bD26888aD3e0B8679D",
-      "Version": "0x742c9b7beeb0FAcd72C3B530a1AA813DF3D20A49",
-      "KyberPriceFeed": "0x244f423F4d9A9E612111738e3B688Bb0F8e2851E"
+      "EthfinexAdapter": "0x4BAa9Bc0188a10BBb1E098cb669f1c9a3157E8dd",
+      "KyberAdapter": "0x9352C702E93873FFC2E2448761dc1EBe11b19171",
+      "OasisDexAdapter": "0xf13e3bA9EA70bb4BDC073fa4E4167461f480590e",
+      "OasisDexAccessor": "0x34A22395fdE2828A624305EB8bB7543A382214ce",
+      "UniswapAdapter": "0x74A2a60977Acff221005aa9ea70783E6CE1367fa",
+      "ZeroExV2Adapter": "0xc18C4417d16Fe4a6C4DC6e7356F4B647AC6219d1",
+      "ZeroExV3Adapter": "0x894b24A05762d650ecB6795F1Ef1093d2b426e74",
+      "EngineAdapter": "0x5E4C8f1E22E9D71A5DFc23f8ff8E3415e3196dcC",
+      "PriceTolerance": "0xf4d8D05212e5dc64d22B0DEA1c197C19Ce9Dc081",
+      "UserWhitelist": "0x1356d3c6d0bd8A51706Aa74d08250d97A3B8f915",
+      "ManagementFee": "0x335521E2d08A82e9E21a1528B88975EC0C2fBba9",
+      "PerformanceFee": "0x97C68d693bcaeEBaC287A8772E846F1C0a526cBf",
+      "AccountingFactory": "0x17BE917fE548bF0Ff4bA26b21724e630107d3134",
+      "FeeManagerFactory": "0x60bbC9f4A454d85514f03426C1B2f0cBFBccAEC3",
+      "ParticipationFactory": "0xbfe94C1fEEB27f233EA4f9eF8FB66839436c4100",
+      "PolicyManagerFactory": "0x0F9e12C22CD541943F38E9Dcd90363CB1226646B",
+      "SharesFactory": "0xF8CDf1Eeee8586c3d499E192e485F721a0b69714",
+      "TradingFactory": "0xeFa83Ea84aaAFa6dA14042377bA74091e4684941",
+      "VaultFactory": "0x048F11aeC5b42e5241e60757EA7912b2A5F41F7f",
+      "Registry": "0xfbB4d098eb860114Aa79183F42fFa735294230Ae",
+      "Engine": "0x1166dA1588E982b2065373e0E85e17Ea7c90ec0B",
+      "TestingPriceFeed": "0x6BCbFaF77Ba0cb520A05c4D3090C809CAE2BEc8a",
+      "Version": "0xfA98fc8e64cC0D1338274952E7D36f1034aEA0a9"
     },
     "conf": {
       "priceTolerance": 10,
@@ -40,7 +41,7 @@
       "versionOwner": "0x0d580ae50b58fe08514deab4e38c0dfdb0d30adc",
       "initialMGM": "0x0d580ae50b58fe08514deab4e38c0dfdb0d30adc",
       "initialUpdater": "0x0d580ae50b58fe08514deab4e38c0dfdb0d30adc",
-      "versionName": "Fakename",
+      "versionName": "FakeName1",
       "exchangeTakesCustody": {
         "oasis": true,
         "kyber": false,
@@ -52,7 +53,7 @@
   },
   "oasis": {
     "addr": {
-      "OasisDexExchange": "0x6932097A648b7F3ed9674bA2848dBcEc276cA0Cf"
+      "OasisDexExchange": "0x9430233b465De92DC96c590236c50a2fB13440BE"
     },
     "conf": {
       "closeTime": "9999999999999",
