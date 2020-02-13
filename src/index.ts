@@ -4,11 +4,11 @@ import { HttpProvider } from 'web3-providers';
 import BigNumber from 'bignumber.js';
 import * as fs from 'fs';
 
-const confFile = './sampleconf.json'
+const confFile = './rinkeby_conf.json'
 const addrsFile = './rinkeby_addresses.json';
 const keystoreFile = './private/keystore.json';
 const passwordFile = './private/password.txt';
-const TESTING = true;
+const TESTING = false;
 
 const main = async () => {
   const conf = JSON.parse(fs.readFileSync(confFile, 'utf8'));
@@ -22,6 +22,10 @@ const main = async () => {
   const ethereum = new Eth(provider, undefined, {
     transactionConfirmationBlocks: 1,
   });
+
+  const sender = conf.Sender;
+  const manager = conf.Manager;
+
   if (TESTING) {
     const keys = [
       // sample addresses and private keys:
@@ -47,9 +51,6 @@ const main = async () => {
 
   const denominationAssetAddress = deployment.tokens.addr[conf.QuoteToken];
   const defaultAssets = conf.AllowedTokens.map(t => deployment.tokens.addr[t]);
-
-  const sender = conf.Sender;
-  const manager = conf.Manager;
 
   /////// This part (parsing and beginSetup) to be called from DAO /////////////
   const managementFeeRate = new BigNumber(conf.ManagementFee).times(oneEth);
