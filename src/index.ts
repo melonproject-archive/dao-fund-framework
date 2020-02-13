@@ -1,92 +1,111 @@
-import { appendDecimals, toBI } from '@melonproject/token-math';
-import {
-  randomString, beginSetup, completeSetupFor, createAccountingFor,
-  createFeeManagerFor, createParticipationFor, createPolicyManagerFor,
-  createSharesFor, createTradingFor, createVaultFor, getRoutes,
-  Environment, getTokenBySymbol, constructEnvironment, managersToHubs,
-} from '@melonproject/protocol';
-const { withKeystoreSigner } = require('@melonproject/protocol/lib/utils/environment/withKeystoreSigner');
-import { Tracks } from '@melonproject/protocol/lib/utils/environment/Environment';
-import { withDeployment } from '@melonproject/protocol/lib/utils/environment/withDeployment';
+import { Eth } from 'web3-eth';
+import { Environment, Version } from '@melonproject/melonjs';
+import { HttpProvider } from 'web3-providers';
+import BigNumber from 'bignumber.js';
 import * as fs from 'fs';
-import * as path from 'path';
 
-const track = Tracks.KYBER_PRICE;
-const packageRoot = path.resolve(`${path.dirname(require.main.filename)}/..`);
-const configPath = `${packageRoot}/private/conf.json`;
-const passwordPath = `${packageRoot}/private/password.txt`;
-const keystorePath = `${packageRoot}/private/keystore.json`;
-
-const getEnvironment = async (conf) => {
-  const keystore = JSON.parse(fs.readFileSync(keystorePath, 'utf8'));
-  const password = fs.readFileSync(passwordPath, 'utf8').trim();
-  let environment = constructEnvironment({
-    endpoint: conf.Endpoint,
-    options: { gasPrice: '10000000000', gasLimit: '9000000' },
-    track,
-  });
-  environment = await withKeystoreSigner(environment, { keystore, password });
-  return withDeployment(environment);
-}
-
-const setupFund = async (environment: Environment, conf) => {
-  const manager = conf.Manager;
-  const { exchangeConfigs, melonContracts } = environment.deployment;
-  const exchanges = {};
-  conf.Exchanges.forEach(e => exchanges[e] = exchangeConfigs[e]);
-
-  const weth = getTokenBySymbol(environment, 'WETH');
-  const defaultTokens = conf.AllowedTokens.map(sym => getTokenBySymbol(environment, sym));
-
-  const quoteToken = getTokenBySymbol(environment, conf.QuoteToken);
-
-  const fees = [
-    {
-      feeAddress: melonContracts.fees.managementFee.toLowerCase(),
-      feePeriod: toBI(0),
-      feeRate: appendDecimals(quoteToken, conf.ManagementFee),
-    }, {
-      feeAddress: melonContracts.fees.performanceFee.toLowerCase(),
-      feePeriod: toBI(60 * 60 * 24 * 90), // performance fee redeemable every quarter
-      feeRate: appendDecimals(quoteToken, conf.PerformanceFee),
-    },
-  ];
-
-  await beginSetup(environment, melonContracts.version, {
-    defaultTokens,
-    exchangeConfigs: exchanges,
-    fees,
-    fundName: conf.FundName,
-    quoteToken,
-  });
-  console.log('Fund setup started');
-  await createAccountingFor(environment, melonContracts.version, {manager});
-  console.log('Accouting created');
-  await createFeeManagerFor(environment, melonContracts.version, {manager});
-  console.log('FeeManager created');
-  await createParticipationFor(environment, melonContracts.version, {manager});
-  console.log('Participation created');
-  await createPolicyManagerFor(environment, melonContracts.version, {manager});
-  console.log('PolicyManager created');
-  await createSharesFor(environment, melonContracts.version, {manager});
-  console.log('Shares created');
-  await createTradingFor(environment, melonContracts.version, {manager});
-  console.log('Trading created');
-  await createVaultFor(environment, melonContracts.version, {manager});
-  console.log('Vault created');
-  await completeSetupFor(environment, melonContracts.version, {manager});
-  console.log('Fund setup complete');
-  const hubAddress = await managersToHubs(environment, melonContracts.version, conf.Manager);
-  const routes = await getRoutes(environment, hubAddress);
-  return { hubAddress, ...routes }
-};
+const confFile = './sampleconf.json'
+const addrsFile = './rinkeby_addresses.json';
+const keystoreFile = './private/keystore.json';
+const passwordFile = './private/password.txt';
+const TESTING = true;
 
 const main = async () => {
-  const conf = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  const env = await getEnvironment(conf);
-  console.log('Got environment');
-  const fundInfo = await setupFund(env, conf);
-  console.log(JSON.stringify(fundInfo, null, 2));
+  const conf = JSON.parse(fs.readFileSync(confFile, 'utf8'));
+  const deployment = JSON.parse(fs.readFileSync(addrsFile, 'utf8'));
+  const oneEth = '1000000000000000000';
+
+  const defaultOpts = { gas: 8000000 };
+  const amguOpts = { ...defaultOpts, amgu: oneEth };
+
+  const provider = new HttpProvider(conf.Endpoint);
+  const ethereum = new Eth(provider, undefined, {
+    transactionConfirmationBlocks: 1,
+  });
+  if (TESTING) {
+    const keys = [
+      // sample addresses and private keys:
+      // 0xc0c82081f2ad248391cd1483ae211d56c280887a,
+      // 0x697d686207b035afef108f39d6ab2fe0a5528c81
+      "d3fdff38aaf7be159fc1c12c66982fea997df08ca5b91b399e437370d3681721",
+      "9cc70449981c6df178133db4c075c408876e8be3b147fa11f8ee947faa0b0011"
+    ];
+    keys.forEach(k => {
+      const wallet = ethereum.accounts.privateKeyToAccount(k);
+      ethereum.accounts.wallet.add(wallet);
+    });
+  } else {
+    const wallet = ethereum.accounts.decrypt(
+      JSON.parse(fs.readFileSync(keystoreFile, 'utf8')),
+      fs.readFileSync(passwordFile, 'utf8').trim()
+    );
+    ethereum.accounts.wallet.add(wallet);
+  }
+  const environment = new Environment(ethereum);
+
+  const version = new Version(environment, deployment.melon.addr.Version);
+
+  const denominationAssetAddress = deployment.tokens.addr[conf.QuoteToken];
+  const defaultAssets = conf.AllowedTokens.map(t => deployment.tokens.addr[t]);
+
+  const sender = conf.Sender;
+  const manager = conf.Manager;
+
+  /////// This part (parsing and beginSetup) to be called from DAO /////////////
+  const managementFeeRate = new BigNumber(conf.ManagementFee).times(oneEth);
+  const performanceFeeRate = new BigNumber(conf.PerformanceFee).times(oneEth);
+
+  let exchanges = [];
+  let adapters = [];
+  if (conf.Exchanges.includes('OasisDex')) {
+    exchanges.push(deployment.oasis.addr.OasisDexExchange);
+    adapters.push(deployment.melon.addr.OasisDexAdapter);
+  }
+  if (conf.Exchanges.includes('KyberNetwork')) {
+    exchanges.push(deployment.kyber.addr.KyberNetworkProxy);
+    adapters.push(deployment.melon.addr.KyberAdapter);
+  }
+  if (conf.Exchanges.includes('ZeroExV2')) {
+    exchanges.push(deployment.zeroExV2.addr.ZeroExV2Exchange);
+    adapters.push(deployment.melon.addr.ZeroExV2Adapter);
+  }
+  if (conf.Exchanges.includes('ZeroExV3')) {
+    exchanges.push(deployment.zeroExV3.addr.ZeroExV3Exchange);
+    adapters.push(deployment.melon.addr.ZeroExV3Adapter);
+  }
+  if (conf.Exchanges.includes('MelonEngine')) {
+    exchanges.push(deployment.melon.addr.Engine);
+    adapters.push(deployment.melon.addr.EngineAdapter);
+  }
+
+  let tx;
+  tx = version.beginSetup(manager, {
+    name: conf.FundName,
+    fees: [deployment.melon.addr.ManagementFee, deployment.melon.addr.PerformanceFee],
+    feeRates: [managementFeeRate, performanceFeeRate],
+    feePeriods: [new BigNumber(0), new BigNumber(90 * 60 * 60 * 24)],
+    exchanges: exchanges,
+    adapters: adapters,
+    denominationAsset: denominationAssetAddress,
+    defaultAssets: defaultAssets,
+  });
+  await tx.send(defaultOpts);
+  //////////////////////////////////////////////////////////////////////////////
+
+  tx = version.createAccountingFor(sender, manager);
+  await tx.send(amguOpts);
+  tx = version.createFeeManagerFor(sender, manager);
+  await tx.send(amguOpts);
+  tx = version.createParticipationFor(sender, manager);
+  await tx.send(amguOpts);
+  tx = version.createPolicyManagerFor(sender, manager);
+  await tx.send(amguOpts);
+  tx = version.createSharesFor(sender, manager);
+  await tx.send(amguOpts);
+  tx = version.createTradingFor(sender, manager);
+  await tx.send(amguOpts);
+  tx = version.createVaultFor(sender, manager);
+  await tx.send(amguOpts);
 }
 
 main().then(() => console.log('Script finished.')).catch(e => console.error(e));
