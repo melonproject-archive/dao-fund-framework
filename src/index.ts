@@ -80,6 +80,8 @@ const main = async () => {
   }
 
   let tx;
+
+  console.log('Beginning setup');
   tx = version.beginSetup(manager, {
     name: conf.FundName,
     fees: [deployment.melon.addr.ManagementFee, deployment.melon.addr.PerformanceFee],
@@ -93,18 +95,25 @@ const main = async () => {
   await tx.send(defaultOpts);
   //////////////////////////////////////////////////////////////////////////////
 
+  console.log('Creating accounting component');
   tx = version.createAccountingFor(sender, manager);
   await tx.send(amguOpts);
+  console.log('Creating fee manager component');
   tx = version.createFeeManagerFor(sender, manager);
   await tx.send(amguOpts);
+  console.log('Creating participation component');
   tx = version.createParticipationFor(sender, manager);
   await tx.send(amguOpts);
+  console.log('Creating policy manager component');
   tx = version.createPolicyManagerFor(sender, manager);
   await tx.send(amguOpts);
+  console.log('Creating shares component');
   tx = version.createSharesFor(sender, manager);
   await tx.send(amguOpts);
+  console.log('Creating trading component');
   tx = version.createTradingFor(sender, manager);
   await tx.send(amguOpts);
+  console.log('Creating vault component');
   tx = version.createVaultFor(sender, manager);
   await tx.send(amguOpts);
 }

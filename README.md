@@ -2,17 +2,16 @@
 
 `yarn && yarn build && mkdir private`
 
-Then create 3 files:
+Then create 2 files:
 
 ```
 private/keystore.json # keystore for account you want to setup from
 private/password.txt  # plaintext password for account
-private/conf.json     # copy from template below
 ```
 
 ## Config
 
-See `sampleconf.json` for an example config to copy and modify.
+See `rinkeby_conf.json` for an example config to copy and modify.
 
 In that file:
 
@@ -30,10 +29,4 @@ For `beginSetup` params, check out [the solidity function](https://github.com/me
 
 These parameters would be derived from the config mentioned above.
 
-After this, use `meloncli` to execute the remaining setup transactions:
-
-```
-meloncli continue-setup-on-behalf $MANAGER \
-    --deployment ./rinkeby_addresses.json --endpoint $RINKEBY_ENDPOINT
-    --key-store $MY_KEYSTORE --key-store-password $PASS
-```
+After this, just run `yarn start` and the script will run.
