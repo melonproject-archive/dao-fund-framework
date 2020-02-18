@@ -4,11 +4,14 @@ import { HttpProvider } from 'web3-providers';
 import BigNumber from 'bignumber.js';
 import * as fs from 'fs';
 
+import { setupAragonDao } from './aragon'
+
 const confFile = './rinkeby_conf.json'
 const addrsFile = './rinkeby_addresses.json';
 const keystoreFile = './private/keystore.json';
 const passwordFile = './private/password.txt';
-const TESTING = false;
+const TESTING = true;
+let network
 
 const main = async () => {
   const conf = JSON.parse(fs.readFileSync(confFile, 'utf8'));
@@ -39,6 +42,7 @@ const main = async () => {
       ethereum.accounts.wallet.add(wallet);
     });
   } else {
+    network = 'rinkeby'
     const wallet = ethereum.accounts.decrypt(
       JSON.parse(fs.readFileSync(keystoreFile, 'utf8')),
       fs.readFileSync(passwordFile, 'utf8').trim()
@@ -79,21 +83,21 @@ const main = async () => {
     adapters.push(deployment.melon.addr.EngineAdapter);
   }
 
-  let tx;
+  const callArgs = [
+    conf.FundName,
+    [deployment.melon.addr.ManagementFee, deployment.melon.addr.PerformanceFee],
+    [managementFeeRate.toString(), performanceFeeRate.toString()],
+    [new BigNumber(0).toString(), new BigNumber(90 * 60 * 60 * 24).toString()],
+    exchanges,
+    adapters,
+    denominationAssetAddress,
+    defaultAssets
+  ]
 
-  console.log('Beginning setup');
-  tx = version.beginSetup(manager, {
-    name: conf.FundName,
-    fees: [deployment.melon.addr.ManagementFee, deployment.melon.addr.PerformanceFee],
-    feeRates: [managementFeeRate, performanceFeeRate],
-    feePeriods: [new BigNumber(0), new BigNumber(90 * 60 * 60 * 24)],
-    exchanges: exchanges,
-    adapters: adapters,
-    denominationAsset: denominationAssetAddress,
-    defaultAssets: defaultAssets,
-  });
-  await tx.send(defaultOpts);
+  await setupAragonDao(conf, callArgs, deployment.melon.addr.Version, network)
   //////////////////////////////////////////////////////////////////////////////
+
+  let tx;
 
   console.log('Creating accounting component');
   tx = version.createAccountingFor(sender, manager);
