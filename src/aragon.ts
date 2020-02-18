@@ -1,9 +1,6 @@
 import { newDao, getInstalledApps, encodeActCall, exec, EXECUTE_FUNCTION_NAME } from '@aragon/toolkit'
 
 export const setupAragonDao = async (config, callArgs, fundFactory, network) => {
-  const signature = 'beginSetup(string,address[],uint256[],uint256[],address[],address[],address,address[])'
-  const encodedCallData = encodeActCall(signature, callArgs)
-
   // Create a membership DAO.
   console.log(`Creating DAO...`)
   const daoAddress = await newDao(
@@ -27,6 +24,9 @@ export const setupAragonDao = async (config, callArgs, fundFactory, network) => 
   const apps = await getInstalledApps(daoAddress, network)
   const agentApp = apps.find(app => app.name === 'Agent')
   console.log('Agent address:', agentApp.proxyAddress)
+
+  const signature = 'beginSetup(string,address[],uint256[],uint256[],address[],address[],address,address[])'
+  const encodedCallData = encodeActCall(signature, callArgs)
 
   await exec(daoAddress, agentApp.proxyAddress, EXECUTE_FUNCTION_NAME, [
     fundFactory,
