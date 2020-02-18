@@ -4,6 +4,7 @@
     "start": "node build/index.js"
   },
   "dependencies": {
+    "@aragon/toolkit": "^0.0.6-beta.1",
     "@melonproject/melonjs": "^0.0.97",
     "@melonproject/protocol": "^1.0.12",
     "@melonproject/token-math": "^0.1.6",
