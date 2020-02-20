@@ -6,12 +6,12 @@ import * as fs from 'fs';
 
 import { setupAragonDao } from './aragon'
 
-const confFile = './rinkeby_conf.json'
+const confFile = './rinkeby.json'
 const addrsFile = './rinkeby_addresses.json';
 const keystoreFile = './private/keystore.json';
 const passwordFile = './private/password.txt';
 const TESTING = true;
-let network
+const network = 'rinkeby'
 
 const main = async () => {
   const conf = JSON.parse(fs.readFileSync(confFile, 'utf8'));
@@ -42,7 +42,6 @@ const main = async () => {
       ethereum.accounts.wallet.add(wallet);
     });
   } else {
-    network = 'rinkeby'
     const wallet = ethereum.accounts.decrypt(
       JSON.parse(fs.readFileSync(keystoreFile, 'utf8')),
       fs.readFileSync(passwordFile, 'utf8').trim()
