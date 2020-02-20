@@ -6,7 +6,7 @@ import * as fs from 'fs';
 
 import { setupAragonDao } from './aragon'
 
-const confFile = './rinkeby.json'
+const confFile = './rinkeby_conf.json'
 const addrsFile = './rinkeby_addresses.json';
 const keystoreFile = './private/keystore.json';
 const passwordFile = './private/password.txt';
