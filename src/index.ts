@@ -1,5 +1,4 @@
 import { Eth } from 'web3-eth';
-import { Environment, Version } from '@melonproject/melonjs';
 import { HttpProvider } from 'web3-providers';
 import BigNumber from 'bignumber.js';
 import * as fs from 'fs';
@@ -18,16 +17,10 @@ const main = async () => {
   const deployment = JSON.parse(fs.readFileSync(addrsFile, 'utf8'));
   const oneEth = '1000000000000000000';
 
-  const defaultOpts = { gas: 8000000 };
-  const amguOpts = { ...defaultOpts, amgu: oneEth };
-
   const provider = new HttpProvider(conf.Endpoint);
   const ethereum = new Eth(provider, undefined, {
     transactionConfirmationBlocks: 1,
   });
-
-  const sender = conf.Sender;
-  const manager = conf.Manager;
 
   if (TESTING) {
     const keys = [
@@ -48,9 +41,6 @@ const main = async () => {
     );
     ethereum.accounts.wallet.add(wallet);
   }
-  const environment = new Environment(ethereum);
-
-  const version = new Version(environment, deployment.melon.addr.Version);
 
   const denominationAssetAddress = deployment.tokens.addr[conf.QuoteToken];
   const defaultAssets = conf.AllowedTokens.map(t => deployment.tokens.addr[t]);
@@ -95,30 +85,6 @@ const main = async () => {
 
   await setupAragonDao(conf, callArgs, deployment.melon.addr.Version, network)
   //////////////////////////////////////////////////////////////////////////////
-
-  let tx;
-
-  console.log('Creating accounting component');
-  tx = version.createAccountingFor(sender, manager);
-  await tx.send(amguOpts);
-  console.log('Creating fee manager component');
-  tx = version.createFeeManagerFor(sender, manager);
-  await tx.send(amguOpts);
-  console.log('Creating participation component');
-  tx = version.createParticipationFor(sender, manager);
-  await tx.send(amguOpts);
-  console.log('Creating policy manager component');
-  tx = version.createPolicyManagerFor(sender, manager);
-  await tx.send(amguOpts);
-  console.log('Creating shares component');
-  tx = version.createSharesFor(sender, manager);
-  await tx.send(amguOpts);
-  console.log('Creating trading component');
-  tx = version.createTradingFor(sender, manager);
-  await tx.send(amguOpts);
-  console.log('Creating vault component');
-  tx = version.createVaultFor(sender, manager);
-  await tx.send(amguOpts);
 }
 
 main().then(() => console.log('Script finished.')).catch(e => console.error(e));
