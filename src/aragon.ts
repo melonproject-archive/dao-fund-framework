@@ -49,7 +49,7 @@ export const setupAragonDao = async (config, beginSetupCallArgs, fundFactory, ne
     'createParticipationFor(address)',
     'createPolicyManagerFor(address)',
     'createSharesFor(address)',
-    'createTradingFor',
+    'createTradingFor(address)',
     'createVaultFor(address)'
   ]
   // Voting signature
@@ -59,12 +59,14 @@ export const setupAragonDao = async (config, beginSetupCallArgs, fundFactory, ne
   sender = fundFactory
 
   // Begin Setup
+  console.log('Use Agent to begin fund setup...')
   await encodeAndExecAgent(beginSetupSignature, beginSetupCallArgs, network)
 
   console.log('Voting YES to begin setup...')
   await exec(daoAddress, votingProxy, voteSignature, [0, true, true],() => {}, network)
 
   // Create components
+  console.log('Create Agent votes...')
   const callArgs = [agentProxy] // Manager
   for (const signature of componentsSignatures ) {
     await encodeAndExecAgent(signature, callArgs, network)
