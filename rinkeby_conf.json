@@ -1,8 +1,8 @@
 {
-  "Endpoint": "https://rinkeby.infura.io/v3/d146fdf20d88476d832edd5d65fc2339",
+  "Endpoint": "https://rinkeby.infura.io/v3/$PROJECT_ID",
   "FundName": "ExampleCapital",
-  "Managers": ["0x697d686207b035afef108f39d6ab2fe0a5528c81"],
-  "Sender": "0xc0c82081f2ad248391cd1483ae211d56c280887a",
+  "Managers": ["0x0d580ae50b58fe08514deab4e38c0dfdb0d30adc"],
+  "Sender": "0x0d580ae50b58fe08514deab4e38c0dfdb0d30adc",
   "Exchanges": [ "OasisDex", "KyberNetwork", "MelonEngine" ],
   "AllowedTokens": [ "BAT", "REP", "WETH", "MLN", "MKR", "DAI" ],
   "QuoteToken": "WETH",
