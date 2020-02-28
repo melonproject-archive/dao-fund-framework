@@ -5,12 +5,8 @@
   },
   "dependencies": {
     "@melonproject/melonjs": "^0.0.97",
-    "@melonproject/protocol": "^1.0.12",
-    "@melonproject/token-math": "^0.1.6",
     "bignumber.js": "^9.0.0",
-    "ethers": "^4.0.37",
     "typescript": "^3.6.4",
-    "web3": "^1.2.6",
     "web3-eth": "^2.0.0-alpha.1",
     "web3-providers": "^2.0.0-alpha.1",
     "web3-utils": "^2.0.0-alpha.1"
