@@ -81,7 +81,7 @@ const main = async () => {
   }
 
   const callArgs = [
-    conf.FundName,
+    conf.FundName + new Date().getTime(), // TODO: remove. Use random name to test
     [deployment.melon.addr.ManagementFee, deployment.melon.addr.PerformanceFee],
     [managementFeeRate.toString(), performanceFeeRate.toString()],
     [new BigNumber(0).toString(), new BigNumber(90 * 60 * 60 * 24).toString()],
@@ -91,32 +91,35 @@ const main = async () => {
     defaultAssets
   ]
 
-  const { agentProxy: agentApp } = await setupAragonDao(conf, callArgs, deployment.melon.addr.Version, network)
+  const { agentProxy } = await setupAragonDao(conf, callArgs, deployment.melon.addr.Version, network)
   //////////////////////////////////////////////////////////////////////////////
 
   let tx;
 
   console.log('Creating accounting component');
-  tx = version.createAccountingFor(sender, agentApp);
+  tx = version.createAccountingFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating fee manager component');
-  tx = version.createFeeManagerFor(sender, agentApp);
+  tx = version.createFeeManagerFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating participation component');
-  tx = version.createParticipationFor(sender, agentApp);
+  tx = version.createParticipationFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating policy manager component');
-  tx = version.createPolicyManagerFor(sender, agentApp);
+  tx = version.createPolicyManagerFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating shares component');
-  tx = version.createSharesFor(sender, agentApp);
+  tx = version.createSharesFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating trading component');
-  tx = version.createTradingFor(sender, agentApp);
+  tx = version.createTradingFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating vault component');
-  tx = version.createVaultFor(sender, agentApp);
+  tx = version.createVaultFor(sender, agentProxy);
   await tx.send(amguOpts);
 }
 
-main().then(() => console.log('Script finished.')).catch(e => console.error(e));
+main().then(() => {
+  console.log('Script finished.')
+  process.exit()
+}).catch(e => console.error(e));
