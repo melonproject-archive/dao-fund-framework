@@ -4,6 +4,7 @@
     "start": "node build/index.js"
   },
   "dependencies": {
+    "@aragon/toolkit": "0.0.6-beta.1",
     "@melonproject/melonjs": "^0.0.97",
     "bignumber.js": "^9.0.0",
     "typescript": "^3.6.4",

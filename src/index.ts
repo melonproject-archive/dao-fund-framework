@@ -3,12 +3,14 @@ import { Environment, Version } from '@melonproject/melonjs';
 import { HttpProvider } from 'web3-providers';
 import BigNumber from 'bignumber.js';
 import * as fs from 'fs';
+import { setupAragonDao } from './aragon'
 
 const confFile = './rinkeby_conf.json'
 const addrsFile = './rinkeby_addresses.json';
 const keystoreFile = './private/keystore.json';
 const passwordFile = './private/password.txt';
-const TESTING = false;
+const TESTING = true;
+const network = 'rinkeby'
 
 const main = async () => {
   const conf = JSON.parse(fs.readFileSync(confFile, 'utf8'));
@@ -24,7 +26,6 @@ const main = async () => {
   });
 
   const sender = conf.Sender;
-  const manager = conf.Manager;
 
   if (TESTING) {
     const keys = [
@@ -79,43 +80,46 @@ const main = async () => {
     adapters.push(deployment.melon.addr.EngineAdapter);
   }
 
-  let tx;
+  const callArgs = [
+    conf.FundName + new Date().getTime(), // TODO: remove. Use random name to test
+    [deployment.melon.addr.ManagementFee, deployment.melon.addr.PerformanceFee],
+    [managementFeeRate.toString(), performanceFeeRate.toString()],
+    [new BigNumber(0).toString(), new BigNumber(90 * 60 * 60 * 24).toString()],
+    exchanges,
+    adapters,
+    denominationAssetAddress,
+    defaultAssets
+  ]
 
-  console.log('Beginning setup');
-  tx = version.beginSetup(manager, {
-    name: conf.FundName,
-    fees: [deployment.melon.addr.ManagementFee, deployment.melon.addr.PerformanceFee],
-    feeRates: [managementFeeRate, performanceFeeRate],
-    feePeriods: [new BigNumber(0), new BigNumber(90 * 60 * 60 * 24)],
-    exchanges: exchanges,
-    adapters: adapters,
-    denominationAsset: denominationAssetAddress,
-    defaultAssets: defaultAssets,
-  });
-  await tx.send(defaultOpts);
+  const { agentProxy } = await setupAragonDao(conf, callArgs, deployment.melon.addr.Version, network)
   //////////////////////////////////////////////////////////////////////////////
 
+  let tx;
+
   console.log('Creating accounting component');
-  tx = version.createAccountingFor(sender, manager);
+  tx = version.createAccountingFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating fee manager component');
-  tx = version.createFeeManagerFor(sender, manager);
+  tx = version.createFeeManagerFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating participation component');
-  tx = version.createParticipationFor(sender, manager);
+  tx = version.createParticipationFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating policy manager component');
-  tx = version.createPolicyManagerFor(sender, manager);
+  tx = version.createPolicyManagerFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating shares component');
-  tx = version.createSharesFor(sender, manager);
+  tx = version.createSharesFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating trading component');
-  tx = version.createTradingFor(sender, manager);
+  tx = version.createTradingFor(sender, agentProxy);
   await tx.send(amguOpts);
   console.log('Creating vault component');
-  tx = version.createVaultFor(sender, manager);
+  tx = version.createVaultFor(sender, agentProxy);
   await tx.send(amguOpts);
 }
 
-main().then(() => console.log('Script finished.')).catch(e => console.error(e));
+main().then(() => {
+  console.log('Script finished.')
+  process.exit()
+}).catch(e => console.error(e));
