@@ -9,8 +9,8 @@ const confFile = './rinkeby_conf.json'
 const addrsFile = './rinkeby_addresses.json';
 const keystoreFile = './private/keystore.json';
 const passwordFile = './private/password.txt';
-const TESTING = true;
-const network = 'rinkeby'
+const TESTING = false;
+const network = 'rinkeby';
 
 const main = async () => {
   const conf = JSON.parse(fs.readFileSync(confFile, 'utf8'));
@@ -54,6 +54,7 @@ const main = async () => {
   const defaultAssets = conf.AllowedTokens.map(t => deployment.tokens.addr[t]);
 
   /////// This part (parsing and beginSetup) to be called from DAO /////////////
+
   const managementFeeRate = new BigNumber(conf.ManagementFee).times(oneEth);
   const performanceFeeRate = new BigNumber(conf.PerformanceFee).times(oneEth);
 
@@ -82,20 +83,36 @@ const main = async () => {
 
   const callArgs = [
     conf.FundName + new Date().getTime(), // TODO: remove. Use random name to test
-    [deployment.melon.addr.ManagementFee, deployment.melon.addr.PerformanceFee],
-    [managementFeeRate.toString(), performanceFeeRate.toString()],
-    [new BigNumber(0).toString(), new BigNumber(90 * 60 * 60 * 24).toString()],
+    [
+      deployment.melon.addr.ManagementFee,
+      deployment.melon.addr.PerformanceFee
+    ],
+    [
+      managementFeeRate.toString(),
+      performanceFeeRate.toString()
+    ],
+    [
+      new BigNumber(0).toString(),
+      new BigNumber(90 * 60 * 60 * 24).toString()
+    ],
     exchanges,
     adapters,
     denominationAssetAddress,
     defaultAssets
-  ]
+  ];
 
-  const { agentProxy } = await setupAragonDao(conf, callArgs, deployment.melon.addr.Version, network)
+  console.log(conf);
+  console.log(sender);
+  const { agentProxy } = await setupAragonDao(
+    conf,
+    callArgs,
+    deployment.melon.addr.Version,
+    network
+  );
+
   //////////////////////////////////////////////////////////////////////////////
 
   let tx;
-
   console.log('Creating accounting component');
   tx = version.createAccountingFor(sender, agentProxy);
   await tx.send(amguOpts);
