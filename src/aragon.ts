@@ -29,7 +29,7 @@ export const setupAragonDao = async (
       config.DaoTokenName,
       config.DaoTokenSymbol,
       fundName,
-      config.Managers,
+      config.DaoMembers,
       config.DaoVotingAppSettings,
       config.DaoFinanceAppPeriod,
       true, // Agent as default

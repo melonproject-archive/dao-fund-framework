@@ -5,7 +5,7 @@
   "DaoTokenSymbol": "FUND",
   "DaoFinanceAppPeriod": "1296000",
   "DaoVotingAppSettings": ["500000000000000000", "50000000000000000", "604800"],
-  "Managers": [
+  "DaoMembers": [
     "0x697d686207b035afef108f39d6ab2fe0a5528c81","0xc0c82081f2ad248391cd1483ae211d56c280887a"
   ],
   "Sender": "0xc0c82081f2ad248391cd1483ae211d56c280887a",
