@@ -82,7 +82,7 @@ const main = async () => {
   }
 
   const callArgs = [
-    conf.FundName + new Date().getTime(), // TODO: remove. Use random name to test
+    conf.FundName,
     [
       deployment.melon.addr.ManagementFee,
       deployment.melon.addr.PerformanceFee
