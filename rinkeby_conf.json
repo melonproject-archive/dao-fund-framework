@@ -1,15 +1,15 @@
 {
   "Endpoint": "https://rinkeby.infura.io/v3/d146fdf20d88476d832edd5d65fc2339",
-  "FundName": "agentprovider",
+  "FundName": "TestFundName",
   "DaoTokenName": "Fund Token",
   "DaoTokenSymbol": "FUND",
   "DaoFinanceAppPeriod": "1296000",
   "DaoVotingAppSettings": ["500000000000000000", "50000000000000000", "604800"],
-  "DaoMembers": ["0x0011a6fc5bd53fd8e2f5b6c7c123629ef9185362"],
-  "Sender": "0x0011a6fc5bd53fd8e2f5b6c7c123629ef9185362",
-  "Exchanges": [ "OasisDex", "KyberNetwork", "MelonEngine" ],
-  "AllowedTokens": [ "BAT", "REP", "WETH", "MLN", "MKR", "DAI" ],
+  "DaoMembers": ["0xb4124cEB3451635DAcedd11767f004d8a28c6eE7"],
+  "Sender": "0xb4124cEB3451635DAcedd11767f004d8a28c6eE7",
+  "Exchanges": ["OasisDex", "KyberNetwork", "MelonEngine"],
+  "AllowedTokens": ["BAT", "REP", "WETH", "MLN", "MKR", "DAI"],
   "QuoteToken": "WETH",
   "ManagementFee": 0.02,
-  "PerformanceFee": 0.20
+  "PerformanceFee": 0.2
 }

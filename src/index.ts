@@ -9,7 +9,7 @@ const confFile = './rinkeby_conf.json'
 const addrsFile = './rinkeby_addresses.json';
 const keystoreFile = './private/keystore.json';
 const passwordFile = './private/password.txt';
-const TESTING = false;
+const TESTING = true;
 const network = 'rinkeby';
 
 const main = async () => {
@@ -30,10 +30,10 @@ const main = async () => {
   if (TESTING) {
     const keys = [
       // sample addresses and private keys:
-      // 0xc0c82081f2ad248391cd1483ae211d56c280887a,
-      // 0x697d686207b035afef108f39d6ab2fe0a5528c81
-      "d3fdff38aaf7be159fc1c12c66982fea997df08ca5b91b399e437370d3681721",
-      "9cc70449981c6df178133db4c075c408876e8be3b147fa11f8ee947faa0b0011"
+      // 0xb4124cEB3451635DAcedd11767f004d8a28c6eE7,
+      // 0x8401Eb5ff34cc943f096A32EF3d5113FEbE8D4Eb
+      "a8a54b2d8197bc0b19bb8a084031be71835580a01e70a45a13babd16c9bc1563",
+      "ce8e3bda3b44269c147747a373646393b1504bfcbb73fc9564f5d753d8116608"
     ];
     keys.forEach(k => {
       const wallet = ethereum.accounts.privateKeyToAccount(k);
