@@ -1,8 +1,9 @@
 import {
+  resolveDaoAddressOrEnsDomain,
   newDao,
   getInstalledApps,
   encodeActCall,
-  exec,
+  execAppMethod,
   EXECUTE_FUNCTION_NAME
 } from '@aragon/toolkit';
 
@@ -16,29 +17,26 @@ export const setupAragonDao = async (
   network
 ) => {
   let daoAddress;
-  // TODO: Been able to load existing orgs
-  // try { 
-  //   daoAddress = resolveDaoAddressOrEnsDomain(config.FundName, network)
-  // } catch (e) {
-  console.log('Creating DAO...');
-  // TODO: remove; using a random name to test
-  const fundName = config.FundName + new Date().getTime();
-  daoAddress = await newDao(
-    'membership-template',
-    [
-      config.DaoTokenName,
-      config.DaoTokenSymbol,
-      fundName,
-      config.DaoMembers,
-      config.DaoVotingAppSettings,
-      config.DaoFinanceAppPeriod,
-      true, // Agent as default
-    ],
-    'newTokenAndInstance',
-    'DeployDao',
-    'latest',
-    network
-  );
+  try { 
+    daoAddress = await resolveDaoAddressOrEnsDomain(config.FundName, network)
+  } catch (e) {
+    console.log('Creating DAO...');
+    daoAddress = await newDao(
+      'membership-template',
+      {
+        newInstanceArgs: [
+        config.DaoTokenName,
+        config.DaoTokenSymbol,
+        config.FundName,
+        config.DaoMembers,
+        config.DaoVotingAppSettings,
+        config.DaoFinanceAppPeriod,
+        true, // Agent as default
+      ],
+      newInstanceMethod: 'newTokenAndInstance',
+      environment: network
+      });
+  }
   console.log('Membership dao: ', daoAddress);
 
   // Get proxy addresses
@@ -57,23 +55,22 @@ export const setupAragonDao = async (
   const encodedCallData = encodeActCall(
     beginSetupSignature, beginSetupCallArgs
   );
-  await exec(
+  await execAppMethod(
     daoAddress,
     agentProxy,
     EXECUTE_FUNCTION_NAME,
     [ fundFactory, 0, encodedCallData ],
-    () => {},
     network
   );
 
-  // TODO: remove. We do it on the script to test
+  // TODO: remove. Consider removing if token holder have 
+  // to decided the vote
   console.log('Voting YES to begin setup...');
-  await exec(
+  await execAppMethod(
     daoAddress,
     votingProxy,
     voteSignature,
     [0, true, true],
-    () => {},
     network
   );
 
