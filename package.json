@@ -5,9 +5,9 @@
   },
   "dependencies": {
     "@aragon/toolkit": "0.0.7-beta.1",
-    "@melonproject/melonjs": "^0.0.97",
+    "@melonproject/melonjs": "^1.0.5",
     "bignumber.js": "^9.0.0",
-    "typescript": "^3.6.4",
+    "typescript": "^3.9.6",
     "web3-eth": "^2.0.0-alpha.1",
     "web3-providers": "^2.0.0-alpha.1",
     "web3-utils": "^2.0.0-alpha.1"

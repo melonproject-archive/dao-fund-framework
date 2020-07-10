@@ -4,11 +4,14 @@ import {
   getInstalledApps,
   encodeActCall,
   execAppMethod,
-  EXECUTE_FUNCTION_NAME
-} from '@aragon/toolkit';
+  EXECUTE_FUNCTION_NAME,
+} from "@aragon/toolkit";
 
-const beginSetupSignature = 'beginSetup(string,address[],uint256[],uint256[],address[],address[],address,address[])';
-const voteSignature = 'vote(uint256,bool,bool)';
+import { stringToBytes } from "@melonproject/melonjs/utils/stringToBytes";
+
+const beginSetupSignature =
+  "beginSetup(string,address[],uint256[],uint256[],address[],address[],address,address[])";
+const voteSignature = "vote(uint256,bool,bool)";
 
 export const setupAragonDao = async (
   config,
@@ -17,15 +20,15 @@ export const setupAragonDao = async (
   network
 ) => {
   let daoAddress;
-  try { 
-    daoAddress = await resolveDaoAddressOrEnsDomain(config.FundName, network)
+  try {
+    console.log("Check if DAO already exists ...");
+    daoAddress = await resolveDaoAddressOrEnsDomain(config.FundName, network);
+    console.log("Yes!");
   } catch (e) {
-    console.log('Creating DAO...');
-    daoAddress = await newDao(
-      'membership-template',
-      {
-        newInstanceArgs: [
-        config.DaoTokenName,
+    console.log("Creating DAO...");
+    daoAddress = await newDao("membership-template", {
+      newInstanceArgs: [
+        stringToBytes(config.DaoTokenName, 32),
         config.DaoTokenSymbol,
         config.FundName,
         config.DaoMembers,
@@ -33,39 +36,40 @@ export const setupAragonDao = async (
         config.DaoFinanceAppPeriod,
         true, // Agent as default
       ],
-      newInstanceMethod: 'newTokenAndInstance',
-      environment: network
-      });
+      newInstanceMethod: "newTokenAndInstance",
+      environment: network,
+    });
   }
-  console.log('Membership dao: ', daoAddress);
+  console.log("Membership dao: ", daoAddress);
 
   // Get proxy addresses
   const apps = await getInstalledApps(daoAddress, network);
-  const agentApp = apps.find(app => app.name === 'Agent');
+  const agentApp = apps.find((app) => app.name === "Agent");
   const agentProxy = agentApp.proxyAddress;
-  console.log('Agent app: ', agentProxy);
+  console.log("Agent app: ", agentProxy);
 
-  const {
-    proxyAddress: votingProxy
-  } = apps.find(app => app.name === 'Voting');
-  console.log('Voting app: ', votingProxy);
+  const { proxyAddress: votingProxy } = apps.find(
+    (app) => app.name === "Voting"
+  );
+  console.log("Voting app: ", votingProxy);
 
   // Begin Setup
-  console.log('Use Agent to begin fund setup...');
+  console.log("Use Agent to begin fund setup...");
   const encodedCallData = encodeActCall(
-    beginSetupSignature, beginSetupCallArgs
+    beginSetupSignature,
+    beginSetupCallArgs
   );
   await execAppMethod(
     daoAddress,
     agentProxy,
     EXECUTE_FUNCTION_NAME,
-    [ fundFactory, 0, encodedCallData ],
+    [fundFactory, 0, encodedCallData],
     network
   );
 
-  // TODO: remove. Consider removing if token holder have 
+  // TODO: remove. Consider removing if token holder have
   // to decided the vote
-  console.log('Voting YES to begin setup...');
+  console.log("Voting YES to begin setup...");
   await execAppMethod(
     daoAddress,
     votingProxy,
@@ -76,6 +80,6 @@ export const setupAragonDao = async (
 
   return {
     daoAddress,
-    agentProxy
-  }
-}
+    agentProxy,
+  };
+};
