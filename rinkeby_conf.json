@@ -1,6 +1,6 @@
 {
   "Endpoint": "https://rinkeby.infura.io/v3/d146fdf20d88476d832edd5d65fc2339",
-  "FundName": "melondaotest6",
+  "FundName": "melondaotest7",
   "DaoTokenName": "Fund Token",
   "DaoTokenSymbol": "FUND",
   "DaoFinanceAppPeriod": "1296000",

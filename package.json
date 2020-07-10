@@ -1,7 +1,7 @@
 {
+  "license": "MIT",
   "scripts": {
-    "build": "tsc --outDir build src/*.ts --sourcemap",
-    "start": "node build/index.js"
+    "start": "ts-node src"
   },
   "dependencies": {
     "@aragon/toolkit": "0.0.7-beta.1",
@@ -11,5 +11,8 @@
     "web3-eth": "^2.0.0-alpha.1",
     "web3-providers": "^2.0.0-alpha.1",
     "web3-utils": "^2.0.0-alpha.1"
+  },
+  "devDependencies": {
+    "ts-node": "^8.10.2"
   }
 }
